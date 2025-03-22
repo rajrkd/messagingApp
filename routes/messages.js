@@ -4,7 +4,7 @@ const cron = require('node-cron');
 const jwt = require('jsonwebtoken');
 const db = require("../model/msgdb");
 const axios = require("axios");
-
+require("dotenv").config();
 // Middleware to authenticate token
 const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization'];
@@ -101,14 +101,14 @@ msgs.post('/send-message', (req, res) => {
   const { token, recipients, message } = req.body;
 
   // Authenticate user
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, process.env.SESSION_SECRET, (err, decoded) => {
     if (err) return res.status(401).send("Unauthorized");
     const userId = decoded.id;
 
     recipients.forEach((recipient) => {
       axios.post(`https://graph.instagram.com/${recipient.instagram_id}/messages`, {
         message,
-        access_token: 'IGAANRZCOFp7EZABZAE82SUFSeVdVTmZAtZA1YwVjdJbkI4cDJ2MVdwOVI5RW9oUTBmV3VLVUQwS2lJaW91cmhKT21yd3Qtd0R1Y0FiYnpTTWJCZAno2X3pOdm1LZAFpDQy1QYjkxNjFNTUtHWF9WMGl2QmVyeXdNa2s5WkVqTkZAFc0RDVQZDZD'
+        access_token: process.env.INSTAGRAM_TOKEN
       })
       .then(response => res.status(200).send("Message sent"))
       .catch(error => res.status(500).send("Error sending message"));

@@ -7,7 +7,8 @@ const cron = require('node-cron');
 const jwt = require('jsonwebtoken');
 const db = require("../model/msgdb");
 const axios = require("axios");
-const SECRET_KEY = '123';
+require("dotenv").config();
+const SECRET_KEY = process.env.SESSION_SECRET;
 var containerId;
 sch.use(uploadReelsModule);//('storeReels','publishReels'));
 

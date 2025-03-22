@@ -1,6 +1,6 @@
 const express = require('express');
 const hook = express.Router();
-
+require("dotenv").config();
 const verify_token = "schedular-callback";
 
 hook.post('/', express.json(), (req, res) => {

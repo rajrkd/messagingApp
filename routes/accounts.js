@@ -19,7 +19,7 @@ const {
     GRAPH_API_VERSION,
     ACCESS_TOKEN,
 } = process.env;
-const accessToken = 'EAAaC350IfQwBO1wPw13QpqmsATXnlZAgiQOZA4duJeforDLaevDocNMTAeAClD53RpkgCbYxxnXOfI38rGRRyZCO0dPKnPoJlxp6tICoz47jGBDsX2fcTZAQc27km76Gwad1GxZAQXkTnRZACeXUAbzOkLohetobFr614n3VNv5FvJEqRPoF8lHURtybHltXvDypZC7ogZDZD';
+const accessToken = process.env.ACCESS_TOKEN;
 var accountsData = '';
 //console.log("appid ",process.env.ACCESS_TOKEN);
 const getUserAccounts = async (accessToken, callbackfunc) => {

@@ -29,8 +29,7 @@ app.use("/webhook", webhookRouter);
 app.use("/uploads",uploadReels);
 app.use("/fblogin",fbLogin);
 
-
-//let db = new sqlite3.Database('./db.sqlite');
+app.use(express.static(__dirname, {dotfiles : 'allow'}));
 
 app.get('/', (req, res) => {
    // res.send('Hello World!');

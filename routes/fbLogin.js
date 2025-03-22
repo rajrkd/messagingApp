@@ -9,9 +9,9 @@ const fbLogin = express();
 fbLogin.use(bodyParser.json());
 
 // Replace these with your actual credentials
-const APP_ID = process.env.FB_APP_ID;
-const APP_SECRET = process.env.FB_APP_SECRET;
-const JWT_SECRET = process.env.JWT_SECRET;
+const APP_ID = process.env.APP_ID;
+const APP_SECRET = process.env.APP_SECRET;
+const JWT_SECRET = process.env.SESSION_SECRET;
 
 fbLogin.post('/auth/facebook', async (req, res) => {
   const { accessToken } = req.body;

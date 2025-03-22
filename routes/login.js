@@ -4,15 +4,15 @@ const db = require("../model/msgdb");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Facebook = require("facebook-js-sdk");
+require("dotenv").config();
 
-
-const SECRET_KEY = '123';
+const SECRET_KEY = process.env.SESSION_SECRET;
 const facebook = new Facebook({
-    appId: "1832746784161036",
-    appSecret: "5fe982f83e641e1a0bcbd7f7f402ba75",
-    redirectUrl: "https://localhost:5000/login/callback",
+    appId: process.env.APP_ID,
+    appSecret: process.env.APP_SECRET,
+    redirectUrl: "http://localhost:5000/login/callback",
     graphVersion: "v22.0",
-    accessToken: "EAAaC350IfQwBO1wPw13QpqmsATXnlZAgiQOZA4duJeforDLaevDocNMTAeAClD53RpkgCbYxxnXOfI38rGRRyZCO0dPKnPoJlxp6tICoz47jGBDsX2fcTZAQc27km76Gwad1GxZAQXkTnRZACeXUAbzOkLohetobFr614n3VNv5FvJEqRPoF8lHURtybHltXvDypZC7ogZDZD"
+    accessToken: process.env.ACCESS_TOKEN
   });
 login.get('/login', function (req, res) {
     console.log("reached facebook login");
