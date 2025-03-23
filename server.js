@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+require("dotenv").config();
 const port = process.env.PORT || 5000;
 
 const registerRouter = require('./routes/register');
