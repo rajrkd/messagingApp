@@ -20,22 +20,22 @@ const fbLogin = require('./routes/fbLogin');
 
 app.use(cors());
 app.use(express.json());
-app.use("/register", registerRouter);
-app.use("/login", loginRouter);
-app.use("/accounts", acctRouter);
-app.use("/messages", msgRouter);
-app.use("/schedule", uploadReels);
-app.use("/webhook", webhookRouter);
+app.use("/api/register", registerRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/accounts", acctRouter);
+app.use("/api/messages", msgRouter);
+app.use("/api/schedule", uploadReels);
+app.use("/api/webhook", webhookRouter);
 //app.use("/uploads",express.static('uploads'));
-app.use("/uploads",uploadReels);
-app.use("/fblogin",fbLogin);
+app.use("/api/uploads",uploadReels);
+app.use("/api/fblogin",fbLogin);
 
 app.use(express.static(__dirname, {dotfiles : 'allow'}));
 
-app.get('/api', (req, res) => {
-   // res.send('Hello World!');
-   //res.render('index');
-  });
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API route not found' });
+});
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
