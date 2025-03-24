@@ -32,7 +32,7 @@ app.use("/fblogin",fbLogin);
 
 app.use(express.static(__dirname, {dotfiles : 'allow'}));
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
    // res.send('Hello World!');
    //res.render('index');
   });
