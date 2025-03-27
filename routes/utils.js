@@ -21,8 +21,10 @@ function _wait(n) { return new Promise(resolve => setTimeout(resolve, n)); }
  * @returns Promise<boolean>
  */
 const isUploadSuccessful = async(retryCount, checkStatusUri) => {
+    console.log("in utils");
     try {
         if (retryCount > 30) return false;
+        console.log("checking ", retryCount);
         const response = await axios.get(checkStatusUri);
         if(response.data.status_code != "FINISHED") {
             await _wait(3000);

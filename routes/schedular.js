@@ -68,3 +68,23 @@ sch.post('/', async function (req, res) {
 });
 
 module.exports = sch;
+/*
+
+upload file to s3 using multers3
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+
+// Configure Multer to use S3 as storage
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.S3_BUCKET_NAME, // Your S3 bucket name
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, `videos/${Date.now()}_${file.originalname}`); // Save with unique filename
+    },
+  }),
+});
+*/

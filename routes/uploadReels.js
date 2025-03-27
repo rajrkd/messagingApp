@@ -9,6 +9,7 @@ var FileStore = require('session-file-store')(session);
 const { default: axios } = require("axios");
 const { isUploadSuccessful } = require("./utils");
 const { URLSearchParams } = require("url");
+const s3 = require("./awsConfig");
 
 const DEFAULT_GRAPH_API_ORIGIN = 'https://graph.facebook.com';
 const DEFAULT_GRAPH_API_VERSION = '';
@@ -56,10 +57,7 @@ const storage = multer.diskStorage(
     filename: function (req, file, cb) {
         const id = req.params.id;
        // console.log("id ", id);
-        var fileDate = new Date().toLocaleDateString("en-US",{year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        }).split('/').reverse().join('-');
+        
         cb(null, `${id}--${Date.now()}--${file.originalname}`);
     }
 });
@@ -109,17 +107,40 @@ function setPostId(id) {
 }
 
 // Endpoint to upload video
-uploadreels.post('/upload/:id', upload.single('video'),(req, res) =>  {
-        
+uploadreels.post('/upload/:id', upload.single('video'),async (req, res) =>  {
+    try {    
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
-        }      
+        }
+        // Local file path
+        console.log("filename ", req.file.filename, " filepath ", req.body.instagramId);
+        const localFilePath = path.join("uploads/", req.file.filename);
+        console.log("localfilepath ",localFilePath);
+        // Read the file and upload it to S3
+        const fileContent = fs.readFileSync(localFilePath);
+
+        const s3Params = {
+        Bucket: process.env.S3_BUCKET_NAME, // Your S3 bucket name
+        Key: `${req.body.igUsername}/${req.file.filename}`, // S3 key
+        Body: fileContent,
+        ContentType: req.file.mimetype,
+
+        };
+
+        // Upload to S3
+        const data = await s3.upload(s3Params).promise();
+        
         res.status(200).json({
             message: 'File uploaded successfully',
-            filePath: NGROK_URL + "/" +req.file.path.replace("\\","/")
+            localFilePath: localFilePath,
+            s3FileUrl: data.Location
         });
     }
-);
+    catch (error) {
+        console.error("Error uploading file:", error);
+        res.status(500).json({ error: "File upload failed!" });    
+    }
+});
 function setContainerId (Id) {
     containerId = Id;
 
@@ -147,7 +168,7 @@ uploadreels.post("/uploadReels", async function (req, res) {
             res.send( {
                 uploaded: false,
                 error: true,
-                message: `Error during upload. [Selected account id - ${accountId}]: ${e}`,
+                message: `Error during upload. [Selected account id - ${accountId}]`,
             });
         }
         else {
@@ -254,6 +275,7 @@ async function publishReels(req,accountIds, containerIds) {
     // Upload happens asynchronously in the backend,
     // so you need to check upload status before you Publish
     const checkStatusUri = buildGraphAPIURL(`${containerId}`, {fields: 'status_code'}, ACCESS_TOKEN);
+    console.log("going to utils");
     const isUploaded = await isUploadSuccessful(0, checkStatusUri);
     console.log("uploaded",isUploaded);
     // When uploaded successfully, publish the video
@@ -386,3 +408,6 @@ uploadreels.post('/schedule', async function (req, res) {
     });
   });
 module.exports = uploadreels;
+
+
+//        ACL: "public-read"
